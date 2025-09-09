@@ -30,6 +30,8 @@
                     <ComboBoxItem Content="Name + ID"/>
                     <ComboBoxItem Content="Names Then IDs"/>
                     <ComboBoxItem Content="IDs Then Names"/>
+                    <ComboBoxItem Content="Names Only"/>
+                    <ComboBoxItem Content="IDs Only"/>
                 </ComboBox>
                 <Label x:Name="SelectedLabel"/>
             </StackPanel>

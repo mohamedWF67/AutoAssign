@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using System.IO;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using CsvHelper;
 using Microsoft.Win32;
@@ -63,14 +62,71 @@ public partial class MainWindow : Window
         await Task.Delay((int)myValue);
         
         Console.WriteLine("Exporting data");
-        
-        foreach (var record in records)
+        switch (MyComboBox.SelectedIndex)
         {
-            Console.WriteLine($"{record.ID}, {record.Name}");
-            _sim.Keyboard.TextEntry(record.Name);
-            _sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
+            case 0:
+                foreach (var record in records)
+                {
+                    _sim.Keyboard.TextEntry(record.ID);
+                    KeyAction(e, null);
+                    _sim.Keyboard.TextEntry(record.Name);
+                    KeyAction(e, null);
+                }
+                break;
+            case 1:
+                foreach (var record in records)
+                {
+                    _sim.Keyboard.TextEntry(record.Name);
+                    KeyAction(e, null);
+                    _sim.Keyboard.TextEntry(record.ID);
+                    KeyAction(e, null);
+                }
+                break;
+            case 2:
+                foreach (var record in records)
+                {
+                    _sim.Keyboard.TextEntry(record.Name);
+                    KeyAction(e, null);
+                }
+                foreach (var record in records)
+                {
+                    _sim.Keyboard.TextEntry(record.ID);
+                    KeyAction(e, null);
+                }
+                break;
+            case 3:
+                foreach (var record in records)
+                {
+                    _sim.Keyboard.TextEntry(record.ID);
+                    KeyAction(e, null);
+                }
+                foreach (var record in records)
+                {
+                    _sim.Keyboard.TextEntry(record.Name);
+                    KeyAction(e, null);
+                }
+                break;
+            case 4:
+                foreach (var record in records)
+                {
+                    _sim.Keyboard.TextEntry(record.Name);
+                    KeyAction(e, null);
+                }
+                break;
+            case 5:
+                foreach (var record in records)
+                {
+                    _sim.Keyboard.TextEntry(record.ID);
+                    KeyAction(e, null);
+                }
+                break;
         }
-        Console.WriteLine("Exporting data");
+        Console.WriteLine("Data Exported");
+    }
+
+    private void KeyAction(object sender, KeyEventArgs e)
+    {
+        _sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
     }
 
     private void OpenCsvButton_Click(object sender, RoutedEventArgs e)
@@ -83,12 +139,13 @@ public partial class MainWindow : Window
 
         if (dialog.ShowDialog() == true)
         {
-            string filePath = dialog.FileName;
+            string filePath = dialog.FileName; 
             FileName.Content = "Filename: " + filePath;
             using var reader = new StreamReader(filePath);
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
             DataService.Instance.Records = csv.GetRecords<dynamic>().ToList();
         }
+        
     }
 }
