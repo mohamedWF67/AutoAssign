@@ -1,0 +1,38 @@
+﻿<Window x:Class="AutoAssign.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="AutoAssign" Width="450" Height="300">
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <StackPanel Margin="20">
+                <Slider x:Name="MySlider"
+                        Minimum="0"
+                        Maximum="200"
+                        TickFrequency="1"
+                        IsSnapToTickEnabled="True"
+                        Width="200"
+                        ValueChanged="MySlider_ValueChanged"/>
+                <Label x:Name="SliderValueLabel"/>
+            </StackPanel>
+            <Label x:Name="FileName" VerticalAlignment="Top" Content="Filename: "/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Width="150" Height="50" Content="File output" Click="Button_Click"/>
+                <Button Width="150" Height="50" Content="File input" Click="OpenCsvButton_Click"/>
+            </StackPanel>
+            <StackPanel Margin="20">
+                <ComboBox x:Name="MyComboBox"
+                          Width="150"
+                          SelectedIndex="0">
+                    <ComboBoxItem Content="ID + Name"/>
+                    <ComboBoxItem Content="Name + ID"/>
+                    <ComboBoxItem Content="Names Then IDs"/>
+                    <ComboBoxItem Content="IDs Then Names"/>
+                </ComboBox>
+                <Label x:Name="SelectedLabel"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

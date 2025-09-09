@@ -1,0 +1,92 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {
+      "AutoAssign/1.0.0": {
+        "dependencies": {
+          "CsvHelper": "33.1.0",
+          "InputSimulator": "1.0.4",
+          "NHotkey": "3.0.0",
+          "NHotkey.Wpf": "3.0.0"
+        },
+        "runtime": {
+          "AutoAssign.dll": {}
+        }
+      },
+      "CsvHelper/33.1.0": {
+        "runtime": {
+          "lib/net9.0/CsvHelper.dll": {
+            "assemblyVersion": "33.0.0.0",
+            "fileVersion": "33.1.0.26"
+          }
+        }
+      },
+      "InputSimulator/1.0.4": {
+        "runtime": {
+          "lib/net20/WindowsInput.dll": {
+            "assemblyVersion": "1.0.4.0",
+            "fileVersion": "1.0.4.0"
+          }
+        }
+      },
+      "NHotkey/3.0.0": {
+        "runtime": {
+          "lib/net6.0-windows7.0/NHotkey.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.0.0.0"
+          }
+        }
+      },
+      "NHotkey.Wpf/3.0.0": {
+        "dependencies": {
+          "NHotkey": "3.0.0"
+        },
+        "runtime": {
+          "lib/net6.0-windows7.0/NHotkey.Wpf.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "AutoAssign/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CsvHelper/33.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kqfTOZGrn7NarNeXgjh86JcpTHUoeQDMB8t9NVa/ZtlSYiV1rxfRnQ49WaJsob4AiGrbK0XDzpyKkBwai4F8eg==",
+      "path": "csvhelper/33.1.0",
+      "hashPath": "csvhelper.33.1.0.nupkg.sha512"
+    },
+    "InputSimulator/1.0.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-D0LvRCPQMX6/FJHBjng+RO+wRDuHTJrfo7IAc7rmkPvRqchdVGJWg3y70peOtDy3OLNK+HSOwVkH4GiuLnkKgA==",
+      "path": "inputsimulator/1.0.4",
+      "hashPath": "inputsimulator.1.0.4.nupkg.sha512"
+    },
+    "NHotkey/3.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-IEghs0QqWsQYH0uUmvIl0Ye6RaebWRh38eB6ToOkDnQucTYRGFOgtig0gSxlwCszTilYFz3n1ZuY762x+kDR3A==",
+      "path": "nhotkey/3.0.0",
+      "hashPath": "nhotkey.3.0.0.nupkg.sha512"
+    },
+    "NHotkey.Wpf/3.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-BIUKlhTG5KtFf9OQzWvkmVmktt5/FFj6AOEgag8Uf0R2YdZt5ajUzs3sVskcJcT2TztWlEHKQr1jFj3KQ0D9Nw==",
+      "path": "nhotkey.wpf/3.0.0",
+      "hashPath": "nhotkey.wpf.3.0.0.nupkg.sha512"
+    }
+  }
+}
