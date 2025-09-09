@@ -1,11 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "iuuMNQZqR0c=",
+  "dgSpecHash": "vRJl6izoE5w=",
   "success": true,
   "projectFilePath": "C:\\Users\\mohamed waleed\\RiderProjects\\AutoAssign\\AutoAssign\\AutoAssign.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\mohamed waleed\\.nuget\\packages\\csvhelper\\33.1.0\\csvhelper.33.1.0.nupkg.sha512",
     "C:\\Users\\mohamed waleed\\.nuget\\packages\\inputsimulator\\1.0.4\\inputsimulator.1.0.4.nupkg.sha512",
+    "C:\\Users\\mohamed waleed\\.nuget\\packages\\messagepack\\3.1.4\\messagepack.3.1.4.nupkg.sha512",
+    "C:\\Users\\mohamed waleed\\.nuget\\packages\\messagepack.annotations\\3.1.4\\messagepack.annotations.3.1.4.nupkg.sha512",
+    "C:\\Users\\mohamed waleed\\.nuget\\packages\\messagepackanalyzer\\3.1.4\\messagepackanalyzer.3.1.4.nupkg.sha512",
+    "C:\\Users\\mohamed waleed\\.nuget\\packages\\microsoft.net.stringtools\\17.11.4\\microsoft.net.stringtools.17.11.4.nupkg.sha512",
     "C:\\Users\\mohamed waleed\\.nuget\\packages\\nhotkey\\3.0.0\\nhotkey.3.0.0.nupkg.sha512",
     "C:\\Users\\mohamed waleed\\.nuget\\packages\\nhotkey.wpf\\3.0.0\\nhotkey.wpf.3.0.0.nupkg.sha512"
   ],

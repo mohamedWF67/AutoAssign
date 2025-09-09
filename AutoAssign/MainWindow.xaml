@@ -6,35 +6,73 @@
         mc:Ignorable="d"
         Title="AutoAssign" Width="450" Height="300">
     <Grid>
-        <StackPanel Orientation="Vertical">
-            <StackPanel Margin="20">
-                <Slider x:Name="MySlider"
-                        Minimum="0"
-                        Maximum="200"
-                        TickFrequency="1"
-                        IsSnapToTickEnabled="True"
-                        Width="200"
-                        ValueChanged="MySlider_ValueChanged"/>
-                <Label x:Name="SliderValueLabel"/>
-            </StackPanel>
-            <Label x:Name="FileName" VerticalAlignment="Top" Content="Filename: "/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Width="150" Height="50" Content="File output" Click="Button_Click"/>
-                <Button Width="150" Height="50" Content="File input" Click="OpenCsvButton_Click"/>
-            </StackPanel>
-            <StackPanel Margin="20">
-                <ComboBox x:Name="MyComboBox"
-                          Width="150"
-                          SelectedIndex="0">
-                    <ComboBoxItem Content="ID + Name"/>
-                    <ComboBoxItem Content="Name + ID"/>
-                    <ComboBoxItem Content="Names Then IDs"/>
-                    <ComboBoxItem Content="IDs Then Names"/>
-                    <ComboBoxItem Content="Names Only"/>
-                    <ComboBoxItem Content="IDs Only"/>
-                </ComboBox>
-                <Label x:Name="SelectedLabel"/>
-            </StackPanel>
-        </StackPanel>
+        <TabControl>
+            <TabItem Header="Home">
+                <StackPanel Orientation="Vertical">
+                    <Label x:Name="FileName" VerticalAlignment="Top" Content="Filename: "/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Width="150" Height="50" Content="File output" Click="Button_Click"/>
+                        <Button Width="150" Height="50" Content="File input" Click="OpenCsvButton_Click"/>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="20">
+                        <StackPanel HorizontalAlignment="Left">
+                            <Label Content="Fill Style"/>
+                            <ComboBox x:Name="FormatChooser"
+                                      Width="150"
+                                      SelectedIndex="0">
+                                <ComboBoxItem Content="ID + Name"/>
+                                <ComboBoxItem Content="Name + ID"/>
+                                <ComboBoxItem Content="Names Then IDs"/>
+                                <ComboBoxItem Content="IDs Then Names"/>
+                                <ComboBoxItem Content="Names Only"/>
+                                <ComboBoxItem Content="IDs Only"/>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel HorizontalAlignment="Left">
+                            <Label Content="ID or Email"/>
+                            <ComboBox x:Name="ID_Email"
+                                      Width="150"
+                                      SelectedIndex="0">
+                                <ComboBoxItem Content="ID"/>
+                                <ComboBoxItem Content="Email"/>
+                            </ComboBox>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Settings">
+                <StackPanel Margin="10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>     <!-- expand -->
+                            <ColumnDefinition Width="Auto"/> <!-- content width -->
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Delay Time" Grid.Column="0" HorizontalAlignment="Left"/>
+                        <TextBlock x:Name="DelayValue" Text="0" Grid.Column="1" HorizontalAlignment="Right"/>
+                    </Grid>
+                    <Slider x:Name="DelayTimeSlider"
+                            Minimum="0"
+                            Maximum="1000"
+                            TickFrequency="10"
+                            IsSnapToTickEnabled="True"
+                            ValueChanged="DelayTimeSlider_ValueChanged"/>
+                    <Grid Margin="0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>     <!-- expand -->
+                            <ColumnDefinition Width="Auto"/> <!-- content width -->
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Move Method" Grid.Column="0"/>
+                        <ComboBox x:Name="MoveMethod"
+                                  Width="150"
+                                  SelectedIndex="0"
+                                  Grid.Column="1">
+                            <ComboBoxItem Content="Tab"/>
+                            <ComboBoxItem Content="Return"/>
+                        </ComboBox>
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

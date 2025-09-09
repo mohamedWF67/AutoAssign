@@ -11,8 +11,13 @@
     <ItemGroup>
       <PackageReference Include="CsvHelper" Version="33.1.0" />
       <PackageReference Include="InputSimulator" Version="1.0.4" />
+      <PackageReference Include="MessagePack" Version="3.1.4" />
       <PackageReference Include="NHotkey" Version="3.0.0" />
       <PackageReference Include="NHotkey.Wpf" Version="3.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Files\" />
     </ItemGroup>
 
 </Project>

@@ -24,3 +24,6 @@ C:\Users\mohamed waleed\RiderProjects\AutoAssign\AutoAssign\bin\Debug\net9.0-win
 C:\Users\mohamed waleed\RiderProjects\AutoAssign\AutoAssign\bin\Debug\net9.0-windows\NHotkey.dll
 C:\Users\mohamed waleed\RiderProjects\AutoAssign\AutoAssign\bin\Debug\net9.0-windows\NHotkey.Wpf.dll
 C:\Users\mohamed waleed\RiderProjects\AutoAssign\AutoAssign\obj\Debug\net9.0-windows\AutoAssign.sourcelink.json
+C:\Users\mohamed waleed\RiderProjects\AutoAssign\AutoAssign\bin\Debug\net9.0-windows\MessagePack.dll
+C:\Users\mohamed waleed\RiderProjects\AutoAssign\AutoAssign\bin\Debug\net9.0-windows\MessagePack.Annotations.dll
+C:\Users\mohamed waleed\RiderProjects\AutoAssign\AutoAssign\bin\Debug\net9.0-windows\Microsoft.NET.StringTools.dll
