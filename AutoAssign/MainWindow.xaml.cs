@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using CsvHelper;
 using Microsoft.Win32;
 using NHotkey;
@@ -19,8 +20,8 @@ public partial class MainWindow : Window
     private List<dynamic> Records;
     private double myValue = 100f;
     private bool _isExporting = false;
-    private bool Excel = true;
     private int Tranq = 0;
+    private bool isReady = false;
 
     public void SaveFiles()
     {
@@ -38,10 +39,10 @@ public partial class MainWindow : Window
         DataPersist loaded = BinaryStorage.Load<DataPersist>(DataPersist.file);
         _dataPersist = loaded;
         Console.WriteLine($"Filepath: {loaded.FilePath} " +
-                          $"Format: {loaded.FormatChooserIndex}" +
-                          $"Identification: {loaded.IdentificationIndex}" +
-                          $"Move Method: {loaded.MoveMethodIndex}" +
-                          $" Delay: {loaded.DelayTime}");
+                          $"Format: {loaded.FormatChooserIndex} " +
+                          $"Identification: {loaded.IdentificationIndex} " +
+                          $"Move Method: {loaded.MoveMethodIndex} " +
+                          $" Delay: {loaded.DelayTime} ");
         FormatChooser.SelectedIndex = loaded.FormatChooserIndex;
         ID_Email.SelectedIndex = loaded.IdentificationIndex;
         MoveMethod.SelectedIndex = loaded.MoveMethodIndex;
@@ -49,7 +50,7 @@ public partial class MainWindow : Window
 
         if (File.Exists(loaded.FilePath))
         {
-            FileName.Content = "Filename: " + loaded.FilePath;
+            FileName.Text = loaded.FilePath;
             using var reader = new StreamReader(loaded.FilePath);
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
@@ -58,7 +59,7 @@ public partial class MainWindow : Window
         }
         else
         {
-            FileName.Content = "Please select a CSV file";
+            FileName.Text = "Please select a CSV file";
         }
     }
     
@@ -74,8 +75,8 @@ public partial class MainWindow : Window
         HotkeyManager.Current.AddOrReplace("ExportData", Key.Q, ModifierKeys.Control | ModifierKeys.Shift, ExportData);
         LoadFiles();
         DelayTimeSlider.Value = myValue;
-        if (!Excel)
-        { Tranq = -1; }
+        if (MoveMethod.SelectedIndex == 2)
+        { Tranq = 0; }
     }
 
     private void DelayTimeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -89,10 +90,9 @@ public partial class MainWindow : Window
 
     private async void ExportData(object sender, HotkeyEventArgs e)
     {
-        if (_isExporting) return;
-        var records = DataService.Instance.Records;
+        if (_isExporting || !isReady) return;
         
-        if (records == null)
+        if (Records == null)
         {
             MessageBox.Show("No data to export", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             OpenCsvButton_Click(e, null);
@@ -105,7 +105,7 @@ public partial class MainWindow : Window
         switch (FormatChooser.SelectedIndex)
         {
             case 0:
-                foreach (var record in records)
+                foreach (var record in Records)
                 {
                     IdentificationEntry(e, null, record);
                     _sim.Keyboard.TextEntry(record.Name);
@@ -113,7 +113,7 @@ public partial class MainWindow : Window
                 }
                 break;
             case 1:
-                foreach (var record in records)
+                foreach (var record in Records)
                 {
                     _sim.Keyboard.TextEntry(record.Name);
                     KeyAction(e, null);
@@ -121,56 +121,63 @@ public partial class MainWindow : Window
                 }
                 break;
             case 2:
-                foreach (var record in records)
+                foreach (var record in Records)
                 {
                     _sim.Keyboard.TextEntry(record.Name);
                     KeyAction(e, null);
                 }
-                foreach (var record in records)
+                foreach (var record in Records)
                 {
                     IdentificationEntry(e, null, record);
                 }
                 break;
             case 3:
-                foreach (var record in records)
+                foreach (var record in Records)
                 {
                     IdentificationEntry(e, null, record);
                 }
-                foreach (var record in records)
+                foreach (var record in Records)
                 {
                     _sim.Keyboard.TextEntry(record.Name);
                     KeyAction(e, null);
                 }
                 break;
             case 4:
-                foreach (var record in records)
+                foreach (var record in Records)
                 {
                     _sim.Keyboard.TextEntry(record.Name);
                     KeyAction(e, null);
                 }
                 break;
             case 5:
-                foreach (var record in records)
+                foreach (var record in Records)
                 {
                     IdentificationEntry(e, null, record);
                 }
                 break;
         }
+
+        Tranq = 0;
         Console.WriteLine("Data Exported");
         _isExporting = false;
     }
 
     private void KeyAction(object sender, KeyEventArgs e)
     {
-        Console.WriteLine($"Tranq = {Tranq} Action = {(Tranq == 0 ? "Return" : "Tab")}" );
+        if (MoveMethod.SelectedIndex == 2)
+        {
+            if (Tranq == 1)
+                _sim.Keyboard.KeyPress(VirtualKeyCode.RETURN);
+            else
+                _sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
+            Tranq = (Tranq + 1) % 2;
+            return;
+        }
         
-        if (MoveMethod.SelectedIndex == 1 && Tranq == 1 || Tranq == 1)
+        if (MoveMethod.SelectedIndex == 1)
             _sim.Keyboard.KeyPress(VirtualKeyCode.RETURN);
         else
             _sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
-        
-        if (MoveMethod.SelectedIndex == 1)
-            Tranq = (Tranq + 1) % 2;
     }
 
     private void IdentificationEntry(object sender, SelectionChangedEventArgs e,dynamic record)
@@ -202,7 +209,7 @@ public partial class MainWindow : Window
         {
             string filePath = dialog.FileName; 
             _dataPersist.FilePath = filePath;
-            FileName.Content = "Filename: " + filePath;
+            FileName.Text = filePath;
             using var reader = new StreamReader(filePath);
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
@@ -210,5 +217,44 @@ public partial class MainWindow : Window
             Records = DataService.Instance.Records;
         }
         
+    }
+
+    private void MoveMethod_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (MoveMethod.SelectedIndex == 2)
+        {
+            int i = 0;
+            if (FormatChooser.SelectedIndex > 1)
+                FormatChooser.SelectedIndex = 1;
+            foreach (var item in FormatChooser.Items)
+            {
+                ComboBoxItem comboItem = (ComboBoxItem)item;
+                if (i > 1)
+                {
+                    comboItem.IsEnabled = false;
+                }
+                else
+                {
+                    comboItem.IsEnabled = true;
+                }
+                i++;
+            }
+        }
+        else
+        {
+            foreach (var item in FormatChooser.Items)
+            {
+                ComboBoxItem comboItem = (ComboBoxItem)item;
+                comboItem.IsEnabled = true;
+            }
+        }
+    }
+
+    private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+    {
+        isReady = !isReady;
+        ReadyBtn.Content = isReady ? "Ready" : "Not Ready";
+        ReadyBtn.BorderBrush = isReady ? Brushes.Green : Brushes.Red;
+        ReadyLabel.Content = isReady ? "Please press: Ctrl + Shift + Q" : "Press Ready to start";
     }
 }

@@ -4,40 +4,68 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
+        ResizeMode="NoResize"
         Title="AutoAssign" Width="450" Height="300">
     <Grid>
         <TabControl>
             <TabItem Header="Home">
-                <StackPanel Orientation="Vertical">
-                    <Label x:Name="FileName" VerticalAlignment="Top" Content="Filename: "/>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button Width="150" Height="50" Content="File input" Click="OpenCsvButton_Click"/>
-                    </StackPanel>
-                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,10">
-                        <StackPanel HorizontalAlignment="Left">
-                            <Label Content="Fill Style"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>   <!-- Fill space -->
+                        <RowDefinition Height="Auto"/> <!-- Footer -->
+                    </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Vertical">
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Height="20"  x:Name="FileName" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                               TextAlignment="left" Text="Please select a CSV file" Grid.Column="0"/>
+                        <Button Width="150" Content="File input" Click="OpenCsvButton_Click" Grid.Column="1"/>
+                    </Grid>
+                    <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Content="Fill Style"/>
                             <ComboBox x:Name="FormatChooser"
                                       Width="150"
-                                      SelectedIndex="0">
-                                <ComboBoxItem Content="ID + Name"/>
+                                      SelectedIndex="0"
+                                      Grid.Column="1">
+                                <ComboBoxItem  Content="ID + Name"/>
                                 <ComboBoxItem Content="Name + ID"/>
                                 <ComboBoxItem Content="Names Then IDs"/>
                                 <ComboBoxItem Content="IDs Then Names"/>
                                 <ComboBoxItem Content="Names Only"/>
                                 <ComboBoxItem Content="IDs Only"/>
                             </ComboBox>
-                        </StackPanel>
-                        <StackPanel HorizontalAlignment="Left">
-                            <Label Content="ID or Email"/>
-                            <ComboBox x:Name="ID_Email"
-                                      Width="150"
-                                      SelectedIndex="0">
-                                <ComboBoxItem Content="ID"/>
-                                <ComboBoxItem Content="Email"/>
-                            </ComboBox>
-                        </StackPanel>
+                        </Grid>
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="ID or Email"/>
+                        <ComboBox x:Name="ID_Email"
+                                  Width="150"
+                                  SelectedIndex="0"
+                                  Grid.Column="1">
+                            <ComboBoxItem Content="ID"/>
+                            <ComboBoxItem Content="Email"/>
+                        </ComboBox>
+                    </Grid>
                     </StackPanel>
-                </StackPanel>
+                    <Grid Grid.Row="1" Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                    <Label x:Name="ReadyLabel" Content="Press Ready to start"/>
+                        <Button Grid.Column="1" Width="70" BorderBrush="Red" BorderThickness="1" x:Name="ReadyBtn" Click="ButtonBase_OnClick"  Content="Not Ready" Padding="5"/>
+                    </Grid>
+                    </Grid>
             </TabItem>
             <TabItem Header="Settings">
                 <StackPanel Margin="10">
@@ -46,7 +74,6 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-
                         <TextBlock Text="Delay Time" Grid.Column="0" HorizontalAlignment="Left"/>
                         <TextBlock x:Name="DelayValue" Text="0" Grid.Column="1" HorizontalAlignment="Right"/>
                     </Grid>
@@ -65,9 +92,11 @@
                         <ComboBox x:Name="MoveMethod"
                                   Width="150"
                                   SelectedIndex="0"
+                                  SelectionChanged="MoveMethod_OnSelectionChanged"
                                   Grid.Column="1">
                             <ComboBoxItem Content="Forms"/>
                             <ComboBoxItem Content="Excel"/>
+                            <ComboBoxItem Content="Excel Form"/>
                         </ComboBox>
                     </Grid>
                 </StackPanel>
