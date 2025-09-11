@@ -51,10 +51,20 @@
                         <ComboBox x:Name="ID_Email"
                                   Width="150"
                                   SelectedIndex="0"
-                                  Grid.Column="1">
+                                  Grid.Column="1"
+                                  SelectionChanged="ID_Email_OnSelectionChanged">
                             <ComboBoxItem Content="ID"/>
                             <ComboBoxItem Content="Email"/>
+                            <ComboBoxItem Content="Custom Email"/>
                         </ComboBox>
+                    </Grid>
+                    <Grid x:Name="EmailDomainBlock" Visibility="Collapsed" Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Email Domain"/>
+                        <TextBox x:Name="EmailDomainTextBox" VerticalContentAlignment="Center" Text="bue.edu.eg" Grid.Column="1" Width="150" />
                     </Grid>
                     </StackPanel>
                     <Grid Grid.Row="1" Margin="0,10,0,0">

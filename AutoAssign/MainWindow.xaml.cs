@@ -50,12 +50,34 @@ public partial class MainWindow : Window
 
         if (File.Exists(loaded.FilePath))
         {
-            FileName.Text = loaded.FilePath;
             using var reader = new StreamReader(loaded.FilePath);
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+            var csvrecords = csv.GetRecords<dynamic>().ToList();
+            if (csvrecords.Count == 0)
+            {
+                MessageBox.Show("No records found in the CSV file.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                FileName.Text = "Please select a CSV file";
+                return;
+            }
 
-            DataService.Instance.Records = csv.GetRecords<dynamic>().ToList();
+            if (csvrecords[0].ID == null)
+            {
+                MessageBox.Show("No IDs where found in the CSV file.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                FileName.Text = "Please select a CSV file";
+                return;
+            }
+            
+            if (csvrecords[0].Name == null)
+            {
+                MessageBox.Show("No names where found in the CSV file.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                FileName.Text = "Please select a CSV file";
+                return;
+            }
+            
+            FileName.Text = loaded.FilePath;
+            DataService.Instance.Records = csvrecords;
             Records = DataService.Instance.Records;
+            
         }
         else
         {
@@ -182,18 +204,21 @@ public partial class MainWindow : Window
 
     private void IdentificationEntry(object sender, SelectionChangedEventArgs e,dynamic record)
     {
-        if (ID_Email.SelectedIndex == 0)
+        switch (ID_Email.SelectedIndex)
         {
-            _sim.Keyboard.TextEntry(record.ID);
-            KeyAction(e, null);
-        }
-        else
-        {
-            if (record.Email != null)
+            case 0:
+                _sim.Keyboard.TextEntry(record.ID);
+                KeyAction(e, null);
+                break;
+            case 1:
                 _sim.Keyboard.TextEntry(record.Email);
-            else
-                _sim.Keyboard.TextEntry(record.Name + record.ID);
-            KeyAction(e, null);
+                KeyAction(e, null);
+                break;
+            case 2:
+                string email = record.Name.Split(' ')[0] + record.ID + "@" + EmailDomainTextBox.Text.TrimEnd();
+                _sim.Keyboard.TextEntry(email);
+                KeyAction(e, null);
+                break;
         }
     }
 
@@ -256,5 +281,16 @@ public partial class MainWindow : Window
         ReadyBtn.Content = isReady ? "Ready" : "Not Ready";
         ReadyBtn.BorderBrush = isReady ? Brushes.Green : Brushes.Red;
         ReadyLabel.Content = isReady ? "Please press: Ctrl + Shift + Q" : "Press Ready to start";
+    }
+
+    private async void ID_Email_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        await Task.Delay(1);
+        if (ID_Email.SelectedIndex == 1 && Records[0].Email == null)
+        {
+            MessageBox.Show("No email column in the CSV file", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            ID_Email.SelectedIndex = 2;
+        }
+        EmailDomainBlock.Visibility = ID_Email.SelectedIndex == 2 ? Visibility.Visible : Visibility.Collapsed;
     }
 }
