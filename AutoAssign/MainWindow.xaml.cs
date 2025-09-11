@@ -19,6 +19,8 @@ public partial class MainWindow : Window
     private List<dynamic> Records;
     private double myValue = 100f;
     private bool _isExporting = false;
+    private bool Excel = true;
+    private int Tranq = 0;
 
     public void SaveFiles()
     {
@@ -72,6 +74,8 @@ public partial class MainWindow : Window
         HotkeyManager.Current.AddOrReplace("ExportData", Key.Q, ModifierKeys.Control | ModifierKeys.Shift, ExportData);
         LoadFiles();
         DelayTimeSlider.Value = myValue;
+        if (!Excel)
+        { Tranq = -1; }
     }
 
     private void DelayTimeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -81,11 +85,6 @@ public partial class MainWindow : Window
             myValue = e.NewValue;
             DelayValue.Text = $"Value: {myValue}";
         }
-    }
-    
-    private void Button_Click(object sender, RoutedEventArgs e)
-    {
-        SaveFiles();
     }
 
     private async void ExportData(object sender, HotkeyEventArgs e)
@@ -163,10 +162,15 @@ public partial class MainWindow : Window
 
     private void KeyAction(object sender, KeyEventArgs e)
     {
-        if (MoveMethod.SelectedIndex == 0)
-            _sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
-        else
+        Console.WriteLine($"Tranq = {Tranq} Action = {(Tranq == 0 ? "Return" : "Tab")}" );
+        
+        if (MoveMethod.SelectedIndex == 1 && Tranq == 1 || Tranq == 1)
             _sim.Keyboard.KeyPress(VirtualKeyCode.RETURN);
+        else
+            _sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
+        
+        if (MoveMethod.SelectedIndex == 1)
+            Tranq = (Tranq + 1) % 2;
     }
 
     private void IdentificationEntry(object sender, SelectionChangedEventArgs e,dynamic record)

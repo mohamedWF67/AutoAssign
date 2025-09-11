@@ -11,10 +11,9 @@
                 <StackPanel Orientation="Vertical">
                     <Label x:Name="FileName" VerticalAlignment="Top" Content="Filename: "/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button Width="150" Height="50" Content="File output" Click="Button_Click"/>
                         <Button Width="150" Height="50" Content="File input" Click="OpenCsvButton_Click"/>
                     </StackPanel>
-                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="20">
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,10">
                         <StackPanel HorizontalAlignment="Left">
                             <Label Content="Fill Style"/>
                             <ComboBox x:Name="FormatChooser"
@@ -44,8 +43,8 @@
                 <StackPanel Margin="10">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>     <!-- expand -->
-                            <ColumnDefinition Width="Auto"/> <!-- content width -->
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Text="Delay Time" Grid.Column="0" HorizontalAlignment="Left"/>
@@ -59,16 +58,16 @@
                             ValueChanged="DelayTimeSlider_ValueChanged"/>
                     <Grid Margin="0,10">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>     <!-- expand -->
-                            <ColumnDefinition Width="Auto"/> <!-- content width -->
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Move Method" Grid.Column="0"/>
                         <ComboBox x:Name="MoveMethod"
                                   Width="150"
                                   SelectedIndex="0"
                                   Grid.Column="1">
-                            <ComboBoxItem Content="Tab"/>
-                            <ComboBoxItem Content="Return"/>
+                            <ComboBoxItem Content="Forms"/>
+                            <ComboBoxItem Content="Excel"/>
                         </ComboBox>
                     </Grid>
                 </StackPanel>
