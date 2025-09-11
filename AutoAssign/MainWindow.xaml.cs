@@ -32,6 +32,7 @@ public partial class MainWindow : Window
 
     public void LoadFiles()
     {
+        if (!File.Exists(DataPersist.file)) return;
         DataPersist loaded = BinaryStorage.Load<DataPersist>(DataPersist.file);
         _dataPersist = loaded;
         Console.WriteLine($"Filepath: {loaded.FilePath} " +
@@ -43,13 +44,20 @@ public partial class MainWindow : Window
         ID_Email.SelectedIndex = loaded.IdentificationIndex;
         MoveMethod.SelectedIndex = loaded.MoveMethodIndex;
         myValue = loaded.DelayTime;
-        
-        FileName.Content = "Filename: " + loaded.FilePath;
-        using var reader = new StreamReader(loaded.FilePath);
-        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
-        DataService.Instance.Records = csv.GetRecords<dynamic>().ToList();
-        Records = DataService.Instance.Records;
+        if (File.Exists(loaded.FilePath))
+        {
+            FileName.Content = "Filename: " + loaded.FilePath;
+            using var reader = new StreamReader(loaded.FilePath);
+            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+
+            DataService.Instance.Records = csv.GetRecords<dynamic>().ToList();
+            Records = DataService.Instance.Records;
+        }
+        else
+        {
+            FileName.Content = "Please select a CSV file";
+        }
     }
     
     protected override void OnClosing(CancelEventArgs e)
