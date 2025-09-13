@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "vRJl6izoE5w=",
+  "dgSpecHash": "S/VMx8Bykjc=",
   "success": true,
   "projectFilePath": "C:\\Users\\mohamed waleed\\RiderProjects\\AutoAssign\\AutoAssign\\AutoAssign.csproj",
   "expectedPackageFiles": [
@@ -11,7 +11,9 @@
     "C:\\Users\\mohamed waleed\\.nuget\\packages\\messagepackanalyzer\\3.1.4\\messagepackanalyzer.3.1.4.nupkg.sha512",
     "C:\\Users\\mohamed waleed\\.nuget\\packages\\microsoft.net.stringtools\\17.11.4\\microsoft.net.stringtools.17.11.4.nupkg.sha512",
     "C:\\Users\\mohamed waleed\\.nuget\\packages\\nhotkey\\3.0.0\\nhotkey.3.0.0.nupkg.sha512",
-    "C:\\Users\\mohamed waleed\\.nuget\\packages\\nhotkey.wpf\\3.0.0\\nhotkey.wpf.3.0.0.nupkg.sha512"
+    "C:\\Users\\mohamed waleed\\.nuget\\packages\\nhotkey.wpf\\3.0.0\\nhotkey.wpf.3.0.0.nupkg.sha512",
+    "C:\\Users\\mohamed waleed\\.nuget\\packages\\wpf-ui\\4.0.3\\wpf-ui.4.0.3.nupkg.sha512",
+    "C:\\Users\\mohamed waleed\\.nuget\\packages\\wpf-ui.abstractions\\4.0.3\\wpf-ui.abstractions.4.0.3.nupkg.sha512"
   ],
   "logs": [
     {

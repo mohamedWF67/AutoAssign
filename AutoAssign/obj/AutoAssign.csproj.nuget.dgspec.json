@@ -64,6 +64,10 @@
             "NHotkey.Wpf": {
               "target": "Package",
               "version": "[3.0.0, )"
+            },
+            "WPF-UI": {
+              "target": "Package",
+              "version": "[4.0.3, )"
             }
           },
           "imports": [

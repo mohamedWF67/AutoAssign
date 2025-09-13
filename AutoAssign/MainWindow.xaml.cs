@@ -11,9 +11,12 @@ using NHotkey;
 using NHotkey.Wpf;
 using WindowsInput;
 using WindowsInput.Native;
+using Wpf.Ui.Controls;
+using MessageBox = System.Windows.MessageBox;
+using MessageBoxButton = System.Windows.MessageBoxButton;
 
 namespace AutoAssign;
-public partial class MainWindow : Window
+public partial class MainWindow : FluentWindow
 {
     private readonly InputSimulator _sim = new InputSimulator();
     private DataPersist _dataPersist = new DataPersist();
