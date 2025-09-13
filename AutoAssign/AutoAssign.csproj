@@ -8,6 +8,7 @@
         <UseWPF>true</UseWPF>
         <ApplicationIcon>Assets\AutoAssignLogo.ico</ApplicationIcon>
         <AssemblyVersion></AssemblyVersion>
+        <Version>0.3.7</Version>
     </PropertyGroup>
 
     <ItemGroup>

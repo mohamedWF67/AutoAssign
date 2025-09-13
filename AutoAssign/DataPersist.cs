@@ -16,6 +16,8 @@ public class DataPersist
     public int MoveMethodIndex { get; set; }
     [Key(4)]
     public int DelayTime { get; set; }
+    [Key(5)]
+    public string EmailDomain { get; set; }
 
     static DataPersist()
     {

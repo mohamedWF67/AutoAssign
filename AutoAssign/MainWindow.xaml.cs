@@ -1,6 +1,10 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Net.Http;
+using System.Reflection;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,6 +24,9 @@ public partial class MainWindow : FluentWindow
 {
     private readonly InputSimulator _sim = new InputSimulator();
     private DataPersist _dataPersist = new DataPersist();
+    private static readonly HttpClient client = new HttpClient();
+    private string? currentVersion;
+    private string? latestVersion;
     private List<dynamic> Records;
     private double myValue = 100f;
     private bool _isExporting = false;
@@ -32,6 +39,7 @@ public partial class MainWindow : FluentWindow
         _dataPersist.FormatChooserIndex = FormatChooser.SelectedIndex;
         _dataPersist.IdentificationIndex = ID_Email.SelectedIndex;
         _dataPersist.MoveMethodIndex = MoveMethod.SelectedIndex;
+        _dataPersist.EmailDomain = EmailDomainTextBox.Text;
         BinaryStorage.Save(DataPersist.file, _dataPersist);
         Console.WriteLine("Saved");
     }
@@ -45,11 +53,13 @@ public partial class MainWindow : FluentWindow
                           $"Format: {loaded.FormatChooserIndex} " +
                           $"Identification: {loaded.IdentificationIndex} " +
                           $"Move Method: {loaded.MoveMethodIndex} " +
-                          $" Delay: {loaded.DelayTime} ");
+                          $" Delay: {loaded.DelayTime} " + 
+                          $" Email Domain: {loaded.EmailDomain}");
         FormatChooser.SelectedIndex = loaded.FormatChooserIndex;
         ID_Email.SelectedIndex = loaded.IdentificationIndex;
         MoveMethod.SelectedIndex = loaded.MoveMethodIndex;
         myValue = loaded.DelayTime;
+        EmailDomainTextBox.Text = loaded.EmailDomain;
 
         if (File.Exists(loaded.FilePath))
         {
@@ -97,6 +107,11 @@ public partial class MainWindow : FluentWindow
     public MainWindow()
     {
         InitializeComponent();
+        currentVersion = "V" + Assembly
+            .GetExecutingAssembly()
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+            .InformationalVersion.Split('+')[0];
+        CheckUpdates();
         HotkeyManager.Current.AddOrReplace("ExportData", Key.Q, ModifierKeys.Control | ModifierKeys.Shift, ExportData);
         LoadFiles();
         DelayTimeSlider.Value = myValue;
@@ -236,12 +251,29 @@ public partial class MainWindow : FluentWindow
         if (dialog.ShowDialog() == true)
         {
             string filePath = dialog.FileName; 
-            _dataPersist.FilePath = filePath;
-            FileName.Text = filePath;
             using var reader = new StreamReader(filePath);
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+            var csvrecords = csv.GetRecords<dynamic>().ToList();
+            if (csvrecords.Count == 0)
+            {
+                MessageBox.Show("No records found in the CSV file.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
-            DataService.Instance.Records = csv.GetRecords<dynamic>().ToList();
+            if (csvrecords[0].ID == null)
+            {
+                MessageBox.Show("No IDs where found in the CSV file.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            
+            if (csvrecords[0].Name == null)
+            {
+                MessageBox.Show("No names where found in the CSV file.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            _dataPersist.FilePath = filePath;
+            FileName.Text = filePath;
+            DataService.Instance.Records = csvrecords;
             Records = DataService.Instance.Records;
         }
         
@@ -283,7 +315,7 @@ public partial class MainWindow : FluentWindow
         isReady = !isReady;
         ReadyBtn.Content = isReady ? "Ready" : "Not Ready";
         ReadyBtn.BorderBrush = isReady ? Brushes.Green : Brushes.Red;
-        ReadyLabel.Content = isReady ? "Please press: Ctrl + Shift + Q" : "Press Ready to start";
+        ReadyLabel.Text = isReady ? "Please press: Ctrl + Shift + Q" : "Press Ready to start";
     }
 
     private async void ID_Email_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -295,5 +327,69 @@ public partial class MainWindow : FluentWindow
             ID_Email.SelectedIndex = 2;
         }
         EmailDomainBlock.Visibility = ID_Email.SelectedIndex == 2 ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private async void CheckUpdates()
+    {
+        try
+        {
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Add("User-Agent", "AutoAssignApp");
+            string url = $"https://api.github.com/repos/mohamedWF67/AutoAssign/releases/latest";
+            var response = await client.GetStringAsync(url);
+
+            using var doc = JsonDocument.Parse(response);
+            latestVersion = doc.RootElement.GetProperty("tag_name").GetString();
+            if (latestVersion.Equals(currentVersion))
+            {
+                Console.WriteLine("Updated");
+                VersionUpdateLink.Visibility = Visibility.Collapsed;
+                VersionText.Text = $"Version: {currentVersion.TrimStart('V')} (Latest)";
+            }
+            else
+            {
+                VersionText.Text = $"Version: {currentVersion.TrimStart('V')} -> {latestVersion.TrimStart('V')}";
+                Console.WriteLine($"Version {currentVersion} is outdated. it should be {latestVersion}");
+                VersionUpdateLink.Visibility = Visibility.Visible;
+            }
+            Console.WriteLine($"Version : {latestVersion}");
+        }
+        catch (HttpRequestException ex)
+        {
+            if (ex.Message.Contains("403") || ex.Message.Contains("rate limit"))
+            {
+                MessageBox.Show("GitHub API rate limit exceeded. Please try again later.", "Rate Limit Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            else
+            {
+                MessageBox.Show($"Failed to check for updates: {ex.Message}", "Network Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            Console.WriteLine($"Update check failed: {ex.Message}");
+        }        
+        catch (JsonException ex)
+        {
+            MessageBox.Show("Failed to parse update information.", "Parse Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            Console.WriteLine($"JSON parse error: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"An unexpected error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            Console.WriteLine($"Unexpected error: {ex.Message}");
+        }
+    }
+
+    private void CheckUpdates_OnClick(object sender, RoutedEventArgs e)
+    {
+        CheckUpdates();
+    }
+
+    private void VersionUpdateLink_OnClick(object sender, RoutedEventArgs e)
+    {
+        string url = $"https://github.com/mohamedWF67/AutoAssign/releases/download/{latestVersion}/AutoAssign.exe";
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = url,
+            UseShellExecute = true
+        });
     }
 }

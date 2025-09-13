@@ -35,7 +35,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" VerticalContentAlignment="Center" Content="Fill Style"/>
+                            <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Fill Style"/>
                             <ComboBox x:Name="FormatChooser"
                                       Width="150"
                                       SelectedIndex="0"
@@ -53,7 +53,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Label VerticalContentAlignment="Center" Content="ID or Email"/>
+                        <TextBlock VerticalAlignment="Center" Text="ID or Email"/>
                         <ComboBox x:Name="ID_Email"
                                   Width="150"
                                   SelectedIndex="0"
@@ -69,7 +69,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Label Content="Email Domain"/>
+                        <TextBlock VerticalAlignment="Center" Text="Email Domain"/>
                         <TextBox x:Name="EmailDomainTextBox" VerticalContentAlignment="Center" Text="bue.edu.eg" Grid.Column="1" Width="150" />
                     </Grid>
                     </StackPanel>
@@ -91,7 +91,7 @@
                             TickFrequency="10"
                             IsSnapToTickEnabled="True"
                             ValueChanged="DelayTimeSlider_ValueChanged"/>
-                    <Grid Margin="0,10">
+                    <Grid Margin="0,10,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
@@ -107,6 +107,15 @@
                             <ComboBoxItem Content="Excel Form"/>
                         </ComboBox>
                     </Grid>
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Version" VerticalAlignment="Center" x:Name="VersionText" />
+                        <Button Grid.Column="1" Width="150" Content="Check for updates" Click="CheckUpdates_OnClick"/>
+                    </Grid>
+                    <Button x:Name="VersionUpdateLink" Click="VersionUpdateLink_OnClick" Content="Install Update" Visibility="Visible" Margin="0,10,0,0" Width="440"/>
                 </StackPanel>
             </TabItem>
         </TabControl>
@@ -115,7 +124,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Label x:Name="ReadyLabel" VerticalContentAlignment="Center" Content="Press Ready to start"/>
+            <TextBlock x:Name="ReadyLabel" VerticalAlignment="Center" Text="Press Ready to start"/>
             <Button Grid.Column="1" Width="70" BorderBrush="Red" BorderThickness="1" x:Name="ReadyBtn" Click="ButtonBase_OnClick"  Content="Not Ready" Padding="5"/>
         </Grid>
         </Grid>
