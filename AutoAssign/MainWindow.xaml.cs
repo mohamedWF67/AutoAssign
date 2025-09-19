@@ -32,6 +32,8 @@ public partial class MainWindow : FluentWindow
     private bool _isExporting = false;
     private int Tranq = 0;
     private bool isReady = false;
+    private bool isOldAlgo = false;
+    private List<ComboBox> _items = new List<ComboBox>();
 
     public void SaveFiles()
     {
@@ -40,6 +42,10 @@ public partial class MainWindow : FluentWindow
         _dataPersist.IdentificationIndex = ID_Email.SelectedIndex;
         _dataPersist.MoveMethodIndex = MoveMethod.SelectedIndex;
         _dataPersist.EmailDomain = EmailDomainTextBox.Text;
+        _dataPersist.OldAlgo = isOldAlgo;
+        _dataPersist.FirstOption = frstItem.SelectedIndex;
+        _dataPersist.SecondOption = SecondItem.SelectedIndex;
+        _dataPersist.ThirdOption = ThirdItem.SelectedIndex;
         BinaryStorage.Save(DataPersist.file, _dataPersist);
         Console.WriteLine("Saved");
     }
@@ -49,17 +55,25 @@ public partial class MainWindow : FluentWindow
         if (!File.Exists(DataPersist.file)) return;
         DataPersist loaded = BinaryStorage.Load<DataPersist>(DataPersist.file);
         _dataPersist = loaded;
-        Console.WriteLine($"Filepath: {loaded.FilePath} " +
-                          $"Format: {loaded.FormatChooserIndex} " +
-                          $"Identification: {loaded.IdentificationIndex} " +
-                          $"Move Method: {loaded.MoveMethodIndex} " +
+        Console.WriteLine($" Filepath: {loaded.FilePath} " +
+                          $" Format: {loaded.FormatChooserIndex} " +
+                          $" Identification: {loaded.IdentificationIndex} " +
+                          $" Move Method: {loaded.MoveMethodIndex} " +
                           $" Delay: {loaded.DelayTime} " + 
-                          $" Email Domain: {loaded.EmailDomain}");
+                          $" Email Domain: {loaded.EmailDomain}" + 
+                          $" Old Algo: {loaded.OldAlgo}" +
+                          $" First Option: {loaded.FirstOption}" +
+                          $" Second Option: {loaded.SecondOption}" +
+                          $" Third Option: {loaded.ThirdOption}");
         FormatChooser.SelectedIndex = loaded.FormatChooserIndex;
         ID_Email.SelectedIndex = loaded.IdentificationIndex;
         MoveMethod.SelectedIndex = loaded.MoveMethodIndex;
         myValue = loaded.DelayTime;
         EmailDomainTextBox.Text = loaded.EmailDomain;
+        oldAlgoSwitch.IsChecked = loaded.OldAlgo;
+        frstItem.SelectedIndex = loaded.FirstOption;
+        SecondItem.SelectedIndex = loaded.SecondOption;
+        ThirdItem.SelectedIndex = loaded.ThirdOption;
 
         if (File.Exists(loaded.FilePath))
         {
@@ -107,6 +121,9 @@ public partial class MainWindow : FluentWindow
     public MainWindow()
     {
         InitializeComponent();
+        _items.Add(frstItem);
+        _items.Add(SecondItem);
+        _items.Add(ThirdItem);
         currentVersion = "V" + Assembly
             .GetExecutingAssembly()
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
@@ -142,67 +159,125 @@ public partial class MainWindow : FluentWindow
         _isExporting = true;
         await Task.Delay((int)myValue);
         Console.WriteLine("Exporting data");
+
+        switch (oldAlgoSwitch.IsChecked)
+        {
+            case true:
+                oldMethod(e, null);
+                break;
+            default:
+                NewMethod(e, null);
+                break;
+        }
+        
+        Tranq = 0;
+        Console.WriteLine("Data Exported");
+        _isExporting = false;
+    }
+
+    private void newKeyAction(bool? A)
+    {
+        switch (A)
+        {
+            case false:
+                _sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
+                break;
+            case true:
+                _sim.Keyboard.KeyPress(VirtualKeyCode.RETURN);
+                break;
+        }
+    }
+
+    private void NewMethod(object sender, RoutedEventArgs e)
+    {
+        foreach (var record in Records) { 
+            foreach (var item in _items)
+            {
+                if (item.SelectedIndex == 0) continue;
+                switch (item.SelectedIndex)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        _sim.Keyboard.TextEntry(record.Name);
+                        break;
+                    case 2:
+                        _sim.Keyboard.TextEntry(record.ID);
+                        break;
+                    case 3:
+                        _sim.Keyboard.TextEntry(record.Email);
+                        break;
+                    case 4:
+                        string email = record.Name.Split(' ')[0] + record.ID + "@" + EmailDomainTextBox.Text.TrimEnd();
+                        _sim.Keyboard.TextEntry(email);
+                        break;
+                }
+                if (item.Equals(_items[2])) continue;
+                newKeyAction(MoveMethod.SelectedIndex == 1);
+            }
+            newKeyAction(MoveMethod.SelectedIndex != 0);
+        }
+    }
+    
+    private void oldMethod(object sender, RoutedEventArgs e)
+    {
         switch (FormatChooser.SelectedIndex)
         {
             case 0:
                 foreach (var record in Records)
                 {
-                    IdentificationEntry(e, null, record);
+                    IdentificationEntry(record);
                     _sim.Keyboard.TextEntry(record.Name);
-                    KeyAction(e, null);
+                    KeyAction();
                 }
                 break;
             case 1:
                 foreach (var record in Records)
                 {
                     _sim.Keyboard.TextEntry(record.Name);
-                    KeyAction(e, null);
-                    IdentificationEntry(e, null, record);
+                    KeyAction();
+                    IdentificationEntry(record);
                 }
                 break;
             case 2:
                 foreach (var record in Records)
                 {
                     _sim.Keyboard.TextEntry(record.Name);
-                    KeyAction(e, null);
+                    KeyAction();
                 }
                 foreach (var record in Records)
                 {
-                    IdentificationEntry(e, null, record);
+                    IdentificationEntry( record);
                 }
                 break;
             case 3:
                 foreach (var record in Records)
                 {
-                    IdentificationEntry(e, null, record);
+                    IdentificationEntry(record);
                 }
                 foreach (var record in Records)
                 {
                     _sim.Keyboard.TextEntry(record.Name);
-                    KeyAction(e, null);
+                    KeyAction();
                 }
                 break;
             case 4:
                 foreach (var record in Records)
                 {
                     _sim.Keyboard.TextEntry(record.Name);
-                    KeyAction(e, null);
+                    KeyAction();
                 }
                 break;
             case 5:
                 foreach (var record in Records)
                 {
-                    IdentificationEntry(e, null, record);
+                    IdentificationEntry(record);
                 }
                 break;
         }
-
-        Tranq = 0;
-        Console.WriteLine("Data Exported");
-        _isExporting = false;
     }
 
-    private void KeyAction(object sender, KeyEventArgs e)
+    private void KeyAction()
     {
         if (MoveMethod.SelectedIndex == 2)
         {
@@ -220,22 +295,22 @@ public partial class MainWindow : FluentWindow
             _sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
     }
 
-    private void IdentificationEntry(object sender, SelectionChangedEventArgs e,dynamic record)
+    private void IdentificationEntry(dynamic record)
     {
         switch (ID_Email.SelectedIndex)
         {
             case 0:
                 _sim.Keyboard.TextEntry(record.ID);
-                KeyAction(e, null);
+                KeyAction();
                 break;
             case 1:
                 _sim.Keyboard.TextEntry(record.Email);
-                KeyAction(e, null);
+                KeyAction();
                 break;
             case 2:
                 string email = record.Name.Split(' ')[0] + record.ID + "@" + EmailDomainTextBox.Text.TrimEnd();
                 _sim.Keyboard.TextEntry(email);
-                KeyAction(e, null);
+                KeyAction();
                 break;
         }
     }
@@ -391,5 +466,37 @@ public partial class MainWindow : FluentWindow
             FileName = url,
             UseShellExecute = true
         });
+    }
+
+    private void FrstItem_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        
+    }
+
+    private void SecondItem_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        
+    }
+
+    private void ThirdItem_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        
+    }
+
+    private void OldAlgoSwitch_OnUnchecked(object sender, RoutedEventArgs e)
+    {
+        FormatChooserGrid.Visibility = Visibility.Collapsed;
+        IndentificationGrid.Visibility = Visibility.Collapsed;
+        EmailDomainBlock.Visibility = Visibility.Visible;
+        NewAlgoPanel.Visibility = Visibility.Visible;
+        isOldAlgo = false;
+    }
+
+    private void OldAlgoSwitch_OnChecked(object sender, RoutedEventArgs e)
+    {
+        FormatChooserGrid.Visibility = Visibility.Visible;
+        IndentificationGrid.Visibility = Visibility.Visible;
+        NewAlgoPanel.Visibility = Visibility.Collapsed;
+        isOldAlgo = true;
     }
 }

@@ -18,6 +18,14 @@ public class DataPersist
     public int DelayTime { get; set; }
     [Key(5)]
     public string EmailDomain { get; set; }
+    [Key(6)]
+    public int FirstOption { get; set; }
+    [Key(7)]
+    public int SecondOption { get; set; }
+    [Key(8)]
+    public int ThirdOption { get; set; }
+    [Key(9)]
+    public bool OldAlgo { get; set; }
 
     static DataPersist()
     {
