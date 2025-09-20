@@ -26,6 +26,8 @@ public class DataPersist
     public int ThirdOption { get; set; }
     [Key(9)]
     public bool OldAlgo { get; set; }
+    [Key(10)]
+    public int ArrangementStyleIndex { get; set; }
 
     static DataPersist()
     {

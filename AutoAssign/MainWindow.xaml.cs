@@ -18,6 +18,7 @@ using WindowsInput.Native;
 using Wpf.Ui.Controls;
 using MessageBox = System.Windows.MessageBox;
 using MessageBoxButton = System.Windows.MessageBoxButton;
+using TextBlock = System.Windows.Controls.TextBlock;
 
 namespace AutoAssign;
 public partial class MainWindow : FluentWindow
@@ -46,6 +47,7 @@ public partial class MainWindow : FluentWindow
         _dataPersist.FirstOption = frstItem.SelectedIndex;
         _dataPersist.SecondOption = SecondItem.SelectedIndex;
         _dataPersist.ThirdOption = ThirdItem.SelectedIndex;
+        _dataPersist.ArrangementStyleIndex = ArangmentStypeBox.SelectedIndex;
         BinaryStorage.Save(DataPersist.file, _dataPersist);
         Console.WriteLine("Saved");
     }
@@ -64,7 +66,8 @@ public partial class MainWindow : FluentWindow
                           $" Old Algo: {loaded.OldAlgo}" +
                           $" First Option: {loaded.FirstOption}" +
                           $" Second Option: {loaded.SecondOption}" +
-                          $" Third Option: {loaded.ThirdOption}");
+                          $" Third Option: {loaded.ThirdOption}" +
+                          $" Arrangement: {loaded.ArrangementStyleIndex}");
         FormatChooser.SelectedIndex = loaded.FormatChooserIndex;
         ID_Email.SelectedIndex = loaded.IdentificationIndex;
         MoveMethod.SelectedIndex = loaded.MoveMethodIndex;
@@ -74,7 +77,8 @@ public partial class MainWindow : FluentWindow
         frstItem.SelectedIndex = loaded.FirstOption;
         SecondItem.SelectedIndex = loaded.SecondOption;
         ThirdItem.SelectedIndex = loaded.ThirdOption;
-
+        ArangmentStypeBox.SelectedIndex = loaded.ArrangementStyleIndex;
+        
         if (File.Exists(loaded.FilePath))
         {
             using var reader = new StreamReader(loaded.FilePath);
@@ -190,32 +194,71 @@ public partial class MainWindow : FluentWindow
 
     private void NewMethod(object sender, RoutedEventArgs e)
     {
-        foreach (var record in Records) { 
+        if (ArangmentStypeBox.SelectedIndex == 0 || MoveMethod.SelectedIndex == 2)
+        {
+            Console.WriteLine("Default");
+            foreach (var record in Records)
+            {
+                foreach (var item in _items)
+                {
+                    if (item.SelectedIndex == 0) continue;
+                    switch (item.SelectedIndex)
+                    {
+                        case 0:
+                            break;
+                        case 1:
+                            _sim.Keyboard.TextEntry(record.Name);
+                            break;
+                        case 2:
+                            _sim.Keyboard.TextEntry(record.ID);
+                            break;
+                        case 3:
+                            _sim.Keyboard.TextEntry(record.Email);
+                            break;
+                        case 4:
+                            string email = record.Name.Split(' ')[0] + record.ID + "@" +
+                                           EmailDomainTextBox.Text.TrimEnd();
+                            _sim.Keyboard.TextEntry(email);
+                            break;
+                    }
+
+                    if (item.Equals(_items[2])) continue;
+                    newKeyAction(MoveMethod.SelectedIndex == 1);
+                }
+
+                newKeyAction(MoveMethod.SelectedIndex != 0);
+            }
+        }
+        else
+        {
+            Console.WriteLine("Alternate");
             foreach (var item in _items)
             {
-                if (item.SelectedIndex == 0) continue;
-                switch (item.SelectedIndex)
+                foreach (var record in Records)
                 {
-                    case 0:
-                        break;
-                    case 1:
-                        _sim.Keyboard.TextEntry(record.Name);
-                        break;
-                    case 2:
-                        _sim.Keyboard.TextEntry(record.ID);
-                        break;
-                    case 3:
-                        _sim.Keyboard.TextEntry(record.Email);
-                        break;
-                    case 4:
-                        string email = record.Name.Split(' ')[0] + record.ID + "@" + EmailDomainTextBox.Text.TrimEnd();
-                        _sim.Keyboard.TextEntry(email);
-                        break;
+                    if (item.SelectedIndex == 0) continue;
+                    switch (item.SelectedIndex)
+                    {
+                        case 0:
+                            break;
+                        case 1:
+                            _sim.Keyboard.TextEntry(record.Name);
+                            break;
+                        case 2:
+                            _sim.Keyboard.TextEntry(record.ID);
+                            break;
+                        case 3:
+                            _sim.Keyboard.TextEntry(record.Email);
+                            break;
+                        case 4:
+                            string email = record.Name.Split(' ')[0] + record.ID + "@" +
+                                           EmailDomainTextBox.Text.TrimEnd();
+                            _sim.Keyboard.TextEntry(email);
+                            break;
+                    }
+                    newKeyAction(MoveMethod.SelectedIndex == 1);
                 }
-                if (item.Equals(_items[2])) continue;
-                newKeyAction(MoveMethod.SelectedIndex == 1);
             }
-            newKeyAction(MoveMethod.SelectedIndex != 0);
         }
     }
     
@@ -374,9 +417,11 @@ public partial class MainWindow : FluentWindow
                 }
                 i++;
             }
+            ArangmentStypeBlock.Visibility = Visibility.Collapsed;
         }
         else
         {
+            ArangmentStypeBlock.Visibility = Visibility.Visible;
             foreach (var item in FormatChooser.Items)
             {
                 ComboBoxItem comboItem = (ComboBoxItem)item;
@@ -468,27 +513,14 @@ public partial class MainWindow : FluentWindow
         });
     }
 
-    private void FrstItem_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        
-    }
-
-    private void SecondItem_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        
-    }
-
-    private void ThirdItem_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        
-    }
-
     private void OldAlgoSwitch_OnUnchecked(object sender, RoutedEventArgs e)
     {
         FormatChooserGrid.Visibility = Visibility.Collapsed;
         IndentificationGrid.Visibility = Visibility.Collapsed;
         EmailDomainBlock.Visibility = Visibility.Visible;
         NewAlgoPanel.Visibility = Visibility.Visible;
+        if (MoveMethod.SelectedIndex != 2)
+            ArangmentStypeBlock.Visibility = Visibility.Visible;
         isOldAlgo = false;
     }
 
@@ -497,6 +529,7 @@ public partial class MainWindow : FluentWindow
         FormatChooserGrid.Visibility = Visibility.Visible;
         IndentificationGrid.Visibility = Visibility.Visible;
         NewAlgoPanel.Visibility = Visibility.Collapsed;
+        ArangmentStypeBlock.Visibility = Visibility.Collapsed;
         isOldAlgo = true;
     }
 }
