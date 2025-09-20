@@ -1,43 +1,55 @@
-Based on the code structure and functionality, here's a comprehensive README file for the AutoAssign application:
-
 # AutoAssign 📋
 
-A powerful WPF application designed to automate data entry from CSV files into forms or spreadsheets. AutoAssign streamlines the process of filling out repetitive forms by automatically typing student information, IDs, emails, and names with customizable formatting options.
+A powerful WPF application designed to automate data entry from CSV files into forms or spreadsheets. AutoAssign streamlines the process of filling out repetitive forms by automatically typing student information, IDs, emails, and names with customizable formatting and arrangement options.
 
 ![AutoAssign Logo](AutoAssign/Assets/AutoAssignLogo.ico)
 
 ## ✨ Features
 
-### 🔄 **Automated Data Entry**
+### 🔄 Automated Data Entry
 - Import CSV files containing student/participant data
 - Automatically fill forms with names, IDs, and email addresses
 - Global hotkey support (`Ctrl + Shift + Q`) for seamless operation
 - Configurable delay timing for different systems
 
-### 📧 **Flexible Email Generation**
+### 📧 Flexible Email Generation
 - Use existing email addresses from CSV
 - Generate custom emails using format: `FirstName + ID + @domain`
 - Configurable email domain (defaults to `bue.edu.eg`)
 - Automatic fallback to custom generation when email column is missing
 
-### 📊 **Multiple Fill Formats**
-- **ID + Name**: Enter ID followed by name for each record
-- **Name + ID**: Enter name followed by ID for each record
-- **Names Then IDs**: Enter all names first, then all IDs
-- **IDs Then Names**: Enter all IDs first, then all names
-- **Names Only**: Enter only names
-- **IDs Only**: Enter only IDs
+### 🧩 New Algorithm With Field Configuration (V0.4+)
+- Configure up to three fields per entry: First, Second, Third
+- Field options: None, Name, ID, Email, Custom Email
+- Works with multiple target environments (Forms, Excel, Excel Form)
 
-### 🎯 **Target Application Support**
-- **Forms**: Standard web forms and desktop applications
-- **Excel**: Direct Excel spreadsheet filling
-- **Excel Form**: Specialized Excel form handling with alternating Tab/Enter navigation
+### 🧭 Arrangement Styles (V0.4.1)
+- By Person: Enter selected fields for each person before moving to the next
+- By Field: Enter the first field for all people, then the second, then the third
 
-### 🛡️ **Data Validation**
+### 📊 Legacy Fill Formats (Old Algorithm)
+- ID + Name
+- Name + ID
+- Names Then IDs
+- IDs Then Names
+- Names Only
+- IDs Only
+
+### 🎯 Target Application Support
+- Forms: Standard web forms and desktop applications
+- Excel: Direct Excel spreadsheet filling
+- Excel Form: Specialized Excel form handling with alternating Tab/Enter navigation
+
+### 🛡️ Data Validation
 - Comprehensive CSV validation
 - Checks for required ID and Name columns
 - Empty file detection
 - User-friendly error messages
+
+### 🎨 Modern UI
+- Clean, card-based interface for better organization (WPF-UI)
+- Mica backdrop theme for a modern Windows look
+- Improved layout and spacing for readability
 
 ## 🚀 Getting Started
 
@@ -54,122 +66,147 @@ A powerful WPF application designed to automate data entry from CSV files into f
 ### CSV File Format
 Your CSV file should contain at minimum these columns:
 ```
-ID,Name,Email
-12345,John Doe,john.doe@example.com
-67890,Jane Smith,jane.smith@example.com
+ID,Name
+12345,John Doe
+67890,Jane Smith
 ```
-
-
-**Note**: The `Email` column is optional. If not present, the application will use the Custom Email generation feature.
+Note: The `Email` column is optional. If not present, the application can generate emails using the Custom Email option.
 
 ## 🎮 Usage
 
 ### Basic Setup
-1. **Load CSV File**: Click "File input" to select your CSV file
-2. **Choose Fill Style**: Select how you want data to be entered
-3. **Select ID/Email Mode**: Choose between ID, Email, or Custom Email generation
-4. **Configure Settings**: Adjust delay time and move method as needed
-5. **Get Ready**: Click "Not Ready" button until it shows "Ready"
+1. Load CSV File: Click “File input” to select your CSV file
+2. Choose Algorithm:
+   - New Algorithm (recommended): flexible field configuration
+   - Old Algorithm: legacy predefined formats
+3. For New Algorithm:
+   - Select Arrangement Style: By Person or By Field
+   - Configure Fields: Set First, Second, Third from Name/ID/Email/Custom Email
+4. For Old Algorithm:
+   - Choose Fill Style from the predefined list
+   - Select ID/Email Mode (ID, Email, or Custom Email)
+5. Configure Settings: Adjust delay time and move method as needed
+6. Get Ready: Click “Not Ready” until it shows “Ready”
 
 ### Data Entry Process
 1. Position your cursor in the target form/spreadsheet
 2. Press `Ctrl + Shift + Q` to start automated entry
-3. The application will automatically type the data according to your settings
-4. Use the configurable delay to match your system's response time
+3. Data is typed according to your algorithm, arrangement, and movement settings
+4. Adjust delay as needed for your environment
 
-### Settings Configuration
+###  Settings Configuration
+
+#### Algorithm Selection (V0.4+)
+- New Algorithm: Field-based and arrangement-aware
+- Old Algorithm: Legacy formats for backward compatibility
+
+#### Arrangement Styles (V0.4.1)
+- By Person: e.g., Name → ID → Email for each person
+- By Field: e.g., all Names, then all IDs, then all Emails
 
 #### Delay Time
-- Adjust the delay between keystrokes (0-1000ms)
+- Adjust the delay between keystrokes (0–1000ms)
 - Higher values for slower systems or web forms
 - Lower values for faster local applications
 
 #### Move Methods
-- **Forms**: Uses Tab key to move between fields
-- **Excel**: Uses Enter key to move to next cell
-- **Excel Form**: Alternates between Tab and Enter keys
+- Forms: Uses Tab to move between fields
+- Excel: Uses Enter to move to the next cell
+- Excel Form: Alternates between Tab and Enter
 
 ## 🔧 Technical Details
 
 ### Built With
-- **.NET 9.0** - Modern .NET framework
-- **WPF** - Windows Presentation Foundation for UI
-- **CsvHelper** - CSV file processing
-- **WindowsInput** - Keyboard automation
-- **NHotkey.Wpf** - Global hotkey support
-- **MessagePack** - Data serialization
+- .NET 9.0
+- WPF
+- WPF-UI (modern controls and theming)
+- CsvHelper (CSV processing)
+- WindowsInput (keyboard automation)
+- NHotkey.Wpf (global hotkeys)
+- MessagePack (settings persistence)
 
 ### Data Persistence
-- Application settings are automatically saved to `Documents/AutoAssign/data.bin`
-- Settings include file path, format preferences, and configuration options
-- Settings are restored when the application restarts
+- Settings saved to `Documents/AutoAssign/data.bin`
+- Persisted options: file path, format preferences, identification mode, move method, delay, email domain, new algorithm field selections, and arrangement style
+- Restored automatically on app startup
 
 ## 📱 User Interface
 
-The application features a clean, tabbed interface:
-
 ### Home Tab
 - CSV file selection
-- Fill style configuration  
+- Fill style (Old Algorithm)
 - ID/Email mode selection
-- Custom email domain input (when applicable)
-- Ready status indicator
+- Email domain input (when Custom Email is selected)
+- Arrangement style (New Algorithm)
+- Field configuration (New Algorithm)
+- Ready status indicator at the bottom
 
 ### Settings Tab
-- Delay time adjustment with slider
+- Delay time slider
+- Algorithm toggle (New vs Old)
 - Move method selection
-- Real-time setting updates
+- Version display and update checker
 
 ## 🔒 Privacy & Security
-
-- All data processing is done locally on your machine
-- No data is transmitted over the internet
-- CSV files and settings are stored locally
-- Application requires no special permissions beyond file access
+- All processing is local
+- No internet transfer of your CSV data
+- Files and settings stored locally
+- No elevated permissions required beyond file access
 
 ## 🐛 Troubleshooting
 
 ### Common Issues
 
-**CSV File Not Loading**
+CSV File Not Loading
 - Ensure your CSV has `ID` and `Name` columns
 - Check that the file is not empty
 - Verify the file is not locked by another application
 
-**Automation Not Working**
-- Make sure the application shows "Ready" status
+Automation Not Working
+- Make sure the application shows “Ready”
 - Verify the target application has focus
-- Try increasing the delay time in settings
+- Increase delay time if fields are being skipped
 
-**Email Generation Issues**
-- Check that names contain at least one word
-- Verify the email domain format is correct
-- Ensure the Custom Email option is selected
+Email Generation Issues
+- Ensure names contain at least a first name
+- Verify the email domain is correct
+- Select Custom Email if your CSV lacks an Email column
+
+Field Configuration Issues
+- Ensure at least one of the three fields is not “None”
+- Try switching arrangement style to match your target app’s flow
 
 ## 🤝 Contributing
-
 We welcome contributions! Please feel free to submit issues, feature requests, or pull requests.
 
 ## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
 ## 🔄 Changelog
 
-### Version 0.3.6 (Latest)
-- ✅ Enhanced CSV validation and error handling
-- 📧 Added custom email generation with configurable domains
-- 🔧 Updated to .NET SDK 9.0
-- 🎨 Improved UI with dynamic email domain visibility
-- 🛡️ Better error recovery mechanisms
+### Version 0.4.1 (Latest)
+- Added Arrangement Styles: By Person and By Field
+- Modernized UI with card-based layout and improved spacing
+- Three-field configuration grid for the New Algorithm
+- Persist arrangement style and field selections between sessions
+- Optimized window dimensions for better content display
+
+### Version 0.4.0
+- Introduced New vs Old Algorithm toggle
+- Enhanced export handling and readability
+- Additional selection options for flexible output
+
+### Version 0.3.6
+- Enhanced CSV validation and error handling
+- Added Custom Email generation with configurable domains
+- Updated to .NET SDK 9.0
+- Improved UI with dynamic email domain visibility
 
 ## 📞 Support
-
 For support, please:
 1. Check the [Issues](../../issues) page for existing solutions
 2. Create a new issue with detailed information
 3. Include your CSV file structure (remove sensitive data)
 
 ---
-
-**AutoAssign** - Streamlining data entry, one CSV at a time! 🚀
+**AutoAssign** — Streamlining data entry, one CSV at a time! 🚀
