@@ -532,4 +532,18 @@ public partial class MainWindow : FluentWindow
         ArangmentStypeBlock.Visibility = Visibility.Collapsed;
         isOldAlgo = true;
     }
+
+    private void HomeBtn_OnClick(object sender, RoutedEventArgs e)
+    {
+        MainTabControl.SelectedIndex = 0;
+        HomeTabButton.BorderBrush = Brushes.DimGray;
+        SettingsTabButton.BorderBrush = Brushes.Transparent;
+    }
+
+    private void SettingsBtn_OnClick(object sender, RoutedEventArgs e)
+    {
+        MainTabControl.SelectedIndex = 1;
+        HomeTabButton.BorderBrush = Brushes.Transparent;
+        SettingsTabButton.BorderBrush = Brushes.DimGray;
+    }
 }
